@@ -1,10 +1,7 @@
 #include "testdir/Test.h"
 
 int main(int argc, char* argv[]) {
-  
-  Test* ceva = new Test;
-  
-  ceva->echo();
-  
+
+  printf("Works yay v2!\n");
   return 0;
 }
