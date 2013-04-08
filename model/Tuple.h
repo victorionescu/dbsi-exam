@@ -1,3 +1,6 @@
+#ifndef TUPLE_H
+#define TUPLE_H
+
 #include <string>
 #include <vector>
 
@@ -19,3 +22,5 @@ namespace model {
   };
   
 }
+
+#endif

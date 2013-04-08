@@ -1,3 +1,6 @@
+#ifndef SIMPLE_ITERATOR_H
+#define SIMPLE_ITERATOR_H
+
 #include <string>
 #include <vector>
 
@@ -28,3 +31,5 @@ namespace util {
     int _currentIndex;
   };
 }
+
+#endif

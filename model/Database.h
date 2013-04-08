@@ -1,3 +1,6 @@
+#ifndef DATABASE_H
+#define DATABASE_H
+
 #include <map>
 #include <string>
 
@@ -10,9 +13,11 @@ namespace model {
   public:
     Database(string file);
     
-    const Relation& getRelation(string name) const;
+    const Relation* getRelation(string name) const;
     
   private:
     map<string, Relation*> _relationsByName;
   };
 }
+
+#endif

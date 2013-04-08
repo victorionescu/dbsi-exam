@@ -1,3 +1,6 @@
+#ifndef RELATION_H
+#define RELATION_H
+
 #include <map>
 #include <string>
 #include <vector>
@@ -27,3 +30,5 @@ namespace model {
     vector<Tuple*> _records;
   };
 }
+
+#endif

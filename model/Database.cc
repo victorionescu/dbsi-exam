@@ -55,11 +55,11 @@ namespace model {
     }
   }
   
-  const Relation& Database::getRelation(string name) const{
+  const Relation* Database::getRelation(string name) const{
     map<string, Relation*>::const_iterator it = _relationsByName.find(name);
     
     if (it != _relationsByName.end()) {
-      return *it->second;
+      return it->second;
     } else {
       throw;
     }
