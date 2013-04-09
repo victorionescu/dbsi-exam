@@ -20,6 +20,6 @@ namespace util {
   }
   
   bool SimpleIterator::atEnd() {
-    return (_currentIndex < _relation.size());
+    return (_currentIndex >= _relation.size());
   }
 }

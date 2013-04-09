@@ -19,6 +19,8 @@ namespace model {
     int getColumnIndex(string columnName) const;
     
     int size() const;
+    
+    string name() const;
      
   private:
     void addRecord(Tuple* record);

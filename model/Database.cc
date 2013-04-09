@@ -61,7 +61,7 @@ namespace model {
     if (it != _relationsByName.end()) {
       return it->second;
     } else {
-      throw;
+      throw 2;
     }
   }
 }

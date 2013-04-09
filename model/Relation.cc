@@ -50,18 +50,25 @@ namespace model {
   }
   
   int Relation::getColumnIndex(string columnName) const {
+    
     map<string, int>::const_iterator it = _columnNamesToIndeces.find(columnName);
     
     if (it != _columnNamesToIndeces.end()) {
       return it->second;
     } else {
-      throw;
+      
+      throw 1;
+    
     }
   }
   
   
   int Relation::size() const {
     return _records.size();
+  }
+  
+  string Relation::name() const {
+    return _name;
   }
   
   /*

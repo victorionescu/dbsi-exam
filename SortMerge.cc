@@ -2,9 +2,15 @@
 #include <string>
 #include <vector>
 
-#include "model/Database.h";
+#include "algorithm/JoinAlgorithm.h"
+#include "algorithm/SortMergeAlgorithm.h"
+#include "model/Database.h"
+#include "model/Query.h"
 
+using algorithm::JoinAlgorithm;
+using algorithm::SortMergeAlgorithm;
 using model::Database;
+using model::Query;
 
 int main(int argc, char* argv[]) {
   
@@ -19,6 +25,12 @@ int main(int argc, char* argv[]) {
   }
   
   Database* db = new Database(args[3]);
+  
+  JoinAlgorithm* joinAlgorithm = new SortMergeAlgorithm();
+  
+  Query* query = new Query(args[1], db, joinAlgorithm);
+  
+  query->executeQuery();
   
   return 0;
 }
