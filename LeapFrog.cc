@@ -31,9 +31,9 @@ int main() {
   coll.push_back(41);
   coll.push_back(5);
   
-  LinearIterator *it = new LinearIterator(coll);
+  LinearIterator<int> *it = new LinearIterator<int>(coll);
   
-  it->seek(101);
+  it->seek(30);
   
   while (!it->atEnd()) {
     printf("%d\n", it->key());
