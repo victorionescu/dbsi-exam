@@ -39,7 +39,6 @@ namespace model {
         
         _relations.push_back(database->getMutableRelation(relationName));
         
-        printf("LOG: Joining relation %s.\n", relationName.c_str());
       
       } catch(int exceptionNumber) {
         
@@ -64,7 +63,6 @@ namespace model {
         
       _attributes.push_back(attributeName);
       
-      printf("LOG: Joining on attribute %s.\n", attributeName.c_str());
     }
   }
   

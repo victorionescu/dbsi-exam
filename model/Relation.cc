@@ -87,6 +87,10 @@ namespace model {
     return *_records[index];
   }
   
+  Tuple* Relation::getMutableRecord(int index) {
+    return _records[index];
+  }
+  
   int Relation::getColumnIndex(string columnName) const {
     
     map<string, int>::const_iterator it = _columnNamesToIndeces.find(columnName);

@@ -11,6 +11,7 @@ namespace model {
   Database::Database(string file) {
     ifstream inputStream(file.c_str());
     
+    // Parsing the file.
     while (!inputStream.eof()) {
       
       string line;
@@ -50,7 +51,6 @@ namespace model {
         columnNames.push_back(columnName);
       }
       
-      printf("LOG: adding relation %s from file %s\n", relationName.c_str(), relationFile.c_str());
       _relationsByName[relationName] = new Relation(relationFile, relationName, columnNames);
     }
   }

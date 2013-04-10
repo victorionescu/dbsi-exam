@@ -10,6 +10,10 @@ using namespace std;
 
 namespace util {
   
+  /*
+    We will use treaps as the balanced search trees for our iterator.
+    For the purpose of creating TrieIterator's we will create a template.
+  */
   template <class T>
   struct Treap {
     T key;
@@ -17,8 +21,9 @@ namespace util {
     
     Treap<T> *left, *right, *dad;
     
-    int minVal, maxVal;
+    T minVal, maxVal;
     
+    // If the node is terminal.
     bool isNil;
     
     Treap() {}
@@ -38,7 +43,10 @@ namespace util {
   };
   
   //////////////////////////////////////////////////////////////////////////////////////////////////
-  
+  /*
+    LinearIterator class implemented via treaps. Complexity per operation is O(log N) and amortised
+    complexity per M successive accesses is O(1 + log(N/M))
+  */
   template <class T>
   class LinearIterator {
   public:
@@ -53,16 +61,22 @@ namespace util {
     void seek(T seekKey);
   
   private:
+    // Binary search tree (balanced) used to implement this iterator.
     Treap<T>* _bst;
     
+    // Pointer to the current position of the iterator
     Treap<T>* _currentPosition;
     
+    // Stack used to move around the tree.
     vector<int> _stack;
   };
   
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   /// IMPLEMENTATION
   ////////////////////////////////////////////////////////////////////////////////////////////////////
+  /*
+    Left rotation of the treap.
+  */
   template <class T>
   void rotateLeft(Treap<T>* node) {
     
@@ -95,6 +109,9 @@ namespace util {
     rightNode->minVal = node->minVal;
   }
   
+  /*
+    Right rotation of the treap.
+  */
   template <class T>
   void rotateRight(Treap<T>* node) {
     
@@ -127,6 +144,9 @@ namespace util {
     leftNode->maxVal = node->maxVal;
   }
   
+  /*
+    Balance treap.
+  */
   template <class T>
   void balance(Treap<T>* node) {
     if (node->left->priority > node->priority)
@@ -135,7 +155,9 @@ namespace util {
       rotateLeft<T>(node);
   }
   
-  
+  /*
+    Insert into treap.
+  */
   template <class T>
   void insert(Treap<T>* node, T key, int priority) {
     if (node->isNil) {
@@ -169,7 +191,10 @@ namespace util {
   }
   
   ////////////////////////////////////////////////////////////////////////////////////////////////
-  
+  /*
+    Initialize an iterator by adding all the elements to the treap.
+    First key to point at is the leftmost node in the treap.
+  */
   template <class T>
   LinearIterator<T>::LinearIterator(const vector<T>& keyCollection) { 
     _bst = new Treap<T>(-1, NULL, NULL, NULL, true);
@@ -193,6 +218,9 @@ namespace util {
     
   }
   
+  /*
+    Return the key the iterator is pointing at.
+  */
   template <class T>
   T LinearIterator<T>::key() {
     assert(!atEnd());
@@ -200,6 +228,10 @@ namespace util {
     return _currentPosition->key;
   }
   
+  /*
+    Move the iterator to the next position using the
+    Left -> Node -> Right order.
+  */
   template <class T>
   void LinearIterator<T>::next() {
     assert(!atEnd());
@@ -224,6 +256,9 @@ namespace util {
     }
   }
   
+  /*
+    Iterator is at end if a terminal node has been reached.
+  */
   template <class T>
   bool LinearIterator<T>::atEnd() {
     return _currentPosition->isNil;
@@ -232,16 +267,22 @@ namespace util {
   
   template <class T>
   void LinearIterator<T>::seek(T seekKey) {
+    /*
+      Move up the tree until we find a node from which we can start sinking.
+    */
     while (!_currentPosition->isNil && _currentPosition->maxVal < seekKey) {
       _stack.pop_back();
       _currentPosition = _currentPosition->dad;
     }
     
-    
     if (_currentPosition->isNil) return;
     
     bool cont = true;
     
+    /*
+      Go right until we find a larger key than seekKey, then sink to the left
+      as much as we can.
+    */
     while (cont) {
       
       cont = false;

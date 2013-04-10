@@ -11,111 +11,17 @@ using namespace std;
 using model::Relation;
 
 namespace algorithm {
-  
-  bool anyIteratorDepleted(vector<SimpleIterator*> iterators) {
-    for (unsigned int i = 0; i < iterators.size(); i++) {
-      if (iterators[i]->atEnd()) return true;
-    }
+
+  /*
+    Compares two records by matching columns pointed at by indecesA with columns
+    pointed at by indecesB.
     
-    return false;
-  }
-  
-  
-  
-  bool allIteratorsEqual(vector<SimpleIterator*> iterators, vector<int> fields) {
-    int valueToCheck = iterators[0]->record().getValue(fields[0]);
+    Returns:
     
-    for (unsigned int i = 1; i < iterators.size(); i++)
-      if (iterators[i]->record().getValue(fields[i]) != valueToCheck) return false;
-      
-    return true;
-  }
-  
-  
-  
-  bool fieldsCoincide(SimpleIterator *iterator, vector<pair<int, int> > constFields) {
-    const Tuple& record = iterator->record();
-    
-    for (unsigned int i = 0; i < constFields.size(); i += 1) {
-      if (record.getValue(constFields[i].first) != constFields[i].second)
-        return false;
-    }
-    
-    return true;
-  } 
-  
-  
-  
-  
-  bool pumpIteratorUp(SimpleIterator *iterator, int field, int maxValue, vector<pair<int, int> > constFields) {
-    while (!iterator->atEnd() && fieldsCoincide(iterator, constFields) && iterator->record().getValue(field) < maxValue) {
-      
-      iterator->next();
-      
-    }
-      
-    return !iterator->atEnd() && fieldsCoincide(iterator, constFields);
-  }
-  
-  
-  
-  
-  bool levelUpIterators(vector<SimpleIterator*> iterators,
-                        vector<int> fields,
-                        vector<vector<pair<int, int> > > constFields) {
-    
-    bool brokenConstFields = false;
-    
-    
-    while (!brokenConstFields && !anyIteratorDepleted(iterators) && !allIteratorsEqual(iterators, fields)) {
-      int maxValue = -1;
-      
-      for (unsigned int i = 0; i < iterators.size(); i++) {
-        if (iterators[i]->record().getValue(fields[i]) > maxValue) {
-          maxValue = iterators[i]->record().getValue(fields[i]);
-        }
-      }
-      
-    
-      for (unsigned int i = 0; i < iterators.size(); i++) {
-        brokenConstFields = brokenConstFields || !pumpIteratorUp(iterators[i], fields[i], maxValue, constFields[i]);
-        
-        if (brokenConstFields) break;
-      }
-      
-    }
-    
-    return (!brokenConstFields && !anyIteratorDepleted(iterators));
-  }
-  
-  
-  /*int backtracking(const vector<vector<const Tuple*> >& tuples) {
-    unsigned int stackSize = tuples.size();
-    
-    vector<unsigned int> stack;
-    
-    int head = 0;
-    
-    stack.push_back(0);
-    
-    while (head >= 0) {
-      if (head == stackSize) {
-        
-        
-        continue;
-      }
-      
-      if (stack[head] < tuples[head].size()) {
-        stack.push_back(0);
-        head++;
-      } else {
-        stack.pop_back();
-        head--;
-        stack[head]++;
-      }
-    }
-  }*/
-  
+    1 - recordA < recordB
+    2 - recordA > recordB
+    3 - recordA = recordB
+  */
   int compareRecords(const Tuple& recordA,
                      const Tuple& recordB,
                      const vector<int>& indecesA,
@@ -131,7 +37,20 @@ namespace algorithm {
     return 3;
   }
   
+  /*
+    Joins relations firstRelation and secondRelation by looking at attributes.
+    
+    If output is true, the result will contain the joined tuples. Otherwise, only
+    the number of records will be printed out. 
+    
+    output is false only for the final two-join.
+  */
+  
   Relation* joinedTwoRelation(Relation* firstRelation, Relation* secondRelation, const vector<string>& attributes, bool output) {
+    /*
+      Looks at the column names and finds out attributes that are common to the relations or are
+      present in only one of them.
+    */
     vector<int> firstCommonAttributes;
     vector<int> secondCommonAttributes;
     vector<string> commonNames;
@@ -196,49 +115,18 @@ namespace algorithm {
       }
     }
     
-    printf("Common attributes: ");
     
-    for (unsigned int i = 0; i < commonNames.size(); i++) {
-      printf("(%d %d) -> %s ", firstCommonAttributes[i], secondCommonAttributes[i], commonNames[i].c_str());
-    }
-    
-    printf("\n");
-    
-    printf("First other attributes: ");
-    
-    for (unsigned int i = 0; i < firstOtherNames.size(); i++) {
-      printf("%d -> %s ", firstOtherAttributes[i], firstOtherNames[i].c_str());
-    }
-    
-    printf("\n");
-    
-    printf("Second other attributes: ");
-    
-    for (unsigned int i = 0; i < secondOtherNames.size(); i++) {
-      printf("%d -> %s ", secondOtherAttributes[i], secondOtherNames[i].c_str());
-    }
-    
-    printf("\n");
-    
-    
+    /*
+      We create two SimpleIterator's, one for each relation and we sort the relations by their,
+      common attributes, in the order specified by the query file.
+    */
     SimpleIterator* firstIterator = new SimpleIterator(firstRelation, firstCommonAttributes);
     
     SimpleIterator* secondIterator = new SimpleIterator(secondRelation, secondCommonAttributes);
     
-    
     /*
-    while (!firstIterator->atEnd()) {
-      const Tuple& record = firstIterator->record();
-      
-      for (unsigned int i = 0; i < record.size(); i++) {
-        printf("%d ", record.getValue(i));
-      }
-      
-      printf("\n");
-      
-      firstIterator->next();
-    }*/
-  
+      We compute the order and names of the columns of the joined relation.
+    */
     
     vector<string> columnNames;
     
@@ -257,6 +145,9 @@ namespace algorithm {
     
     long long counter = 0;
     
+    /*
+      Finally, we do the SortMerge step.
+    */
     while (!firstIterator->atEnd() && !secondIterator->atEnd()) {
       while (!firstIterator->atEnd() && compareRecords(firstIterator->record(), secondIterator->record(),
                                                        firstCommonAttributes, secondCommonAttributes) == 1) {
@@ -272,6 +163,9 @@ namespace algorithm {
       
       if (secondIterator->atEnd()) continue;
       
+      /*
+        One we have found a match, we process all the equal elements and generate all possible pairs.
+      */
       if (compareRecords(firstIterator->record(), secondIterator->record(),
                          firstCommonAttributes, secondCommonAttributes) == 3) {
         
@@ -316,6 +210,7 @@ namespace algorithm {
           secondIterator->next();
         }
         
+        // If output, we store those records in memory.
         if (output) {
         
           for (unsigned int i = 0; i < firstTuplesToMatch.size(); i++)
@@ -336,7 +231,7 @@ namespace algorithm {
             
               result->addRecord(newTuple);
             }
-        } else {
+        } else { // Otherwise, we just count them.
           counter += (long long)firstTuplesToMatch.size() * secondTuplesToMatch.size();
         }
         
@@ -350,6 +245,12 @@ namespace algorithm {
     return result;
   }
   
+  /*
+    We are trying to maximize the number of common attributes, so we are looking to level up the number
+    of columns of the relations that we join. That is why, we try to join them using a tree structure.
+    
+    output has the same meaning as above.
+  */ 
   Relation* binaryMerge(const vector<Relation*>& relations, int start, int end, const vector<string>& attributes, bool output) {
     if (start == end)
       return relations[start];
@@ -364,7 +265,10 @@ namespace algorithm {
   
   Relation* SortMergeAlgorithm::joinedRelation(vector<Relation*> relations,
                                                vector<string> attributes) {
-                                                 
+    
+    /*
+      Here we just do a merge on the whole binary tree, setting output to 0. (since storing all the records runs out of memory)
+    */                                             
     return binaryMerge(relations, 0, relations.size() - 1, attributes, false);
   }
 } 

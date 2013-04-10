@@ -20,13 +20,14 @@ using model::Relation;
 using util::SimpleIterator;
 
 namespace algorithm {
+  /*
+    A version of JoinAlgorithm which uses the SortMerge algorithm for joining.
+  */
   class SortMergeAlgorithm : public JoinAlgorithm {
   public:
     Relation* joinedRelation(vector<Relation*> relations,
                              vector<string> attributes);
                              
-  private:
-    vector<SimpleIterator*> _iterators;
   };
 }
 

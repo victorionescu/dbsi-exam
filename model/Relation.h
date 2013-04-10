@@ -18,6 +18,8 @@ namespace model {
     
     const Tuple& getRecord(int index) const;
     
+    Tuple* getMutableRecord(int index);
+    
     int getColumnIndex(string columnName) const;
     
     void sortBy(const vector<int>& indeces);

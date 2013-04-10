@@ -23,6 +23,7 @@ int main(int argc, char* argv[]) {
   
   if (args.size() != 4 || args[0] != "-query" || args[2] != "-database") {
     printf("usage: sortmerge -query [queryfile] -database [databasefile]\n");
+    return 0;
   }
   
   Database* db = new Database(args[3]);

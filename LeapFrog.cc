@@ -1,44 +1,40 @@
-#include <cstdio>
+#include <iostream>
+#include <string>
 #include <vector>
 
-#include "util/LinearIterator.h"
+#include "algorithm/JoinAlgorithm.h"
+#include "algorithm/LeapfrogAlgorithm.h"
+#include "model/Database.h"
+#include "model/Query.h"
+#include "model/Relation.h"
 
-using namespace std;
+using algorithm::JoinAlgorithm;
+using algorithm::LeapfrogAlgorithm;
+using model::Database;
+using model::Query;
 
-using util::LinearIterator;
-
-int main() {
+int main(int argc, char* argv[]) {
   
-  printf("Starting Leapfrog\n");
+  vector<string> args;
   
-  vector<int> coll;
-  coll.push_back(15);
-  coll.push_back(15);
-  coll.push_back(100);
-  coll.push_back(6);
-  coll.push_back(5);
-  coll.push_back(31);
-  coll.push_back(5);
-  coll.push_back(1);
-  coll.push_back(23);
-  coll.push_back(5);
-  coll.push_back(3);
-  coll.push_back(5);
-  coll.push_back(10);
-  coll.push_back(2);
-  coll.push_back(35);
-  coll.push_back(1);
-  coll.push_back(41);
-  coll.push_back(5);
-  
-  LinearIterator<int> *it = new LinearIterator<int>(coll);
-  
-  it->seek(30);
-  
-  while (!it->atEnd()) {
-    printf("%d\n", it->key());
-    it->next();
+  for (int i = 1; i < argc; ++i) {
+    args.push_back(argv[i]);
   }
+  
+  if (args.size() != 4 || args[0] != "-query" || args[2] != "-database") {
+    printf("usage: leapfrog -query [queryfile] -database [databasefile]\n");
+    return 0;
+  }
+  
+  Database* db = new Database(args[3]);
+  
+  JoinAlgorithm* joinAlgorithm = new LeapfrogAlgorithm();
+  
+  Query* query = new Query(args[1], db, joinAlgorithm);
+  
+  Relation* result = query->executeQuery();
+  
+  //printf("%d records.\n", result->size());
   
   return 0;
 }

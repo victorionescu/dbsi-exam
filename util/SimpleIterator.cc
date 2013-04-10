@@ -8,8 +8,10 @@ namespace util {
   SimpleIterator::SimpleIterator(Relation* relation, const vector<int>& indecesToSort)
       : _relation(relation) {
     
+    // Sorts the relation by indecesToSort.
     _relation->sortBy(indecesToSort);
     
+    // Sets the current index to the beginning of the relation.
     _currentIndex = 0;
   }
   
