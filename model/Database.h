@@ -15,6 +15,8 @@ namespace model {
     
     const Relation* getRelation(string name) const;
     
+    Relation* getMutableRelation(string name);
+    
   private:
     map<string, Relation*> _relationsByName;
   };

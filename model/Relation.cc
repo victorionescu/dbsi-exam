@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -8,11 +9,48 @@
 using namespace std;
 
 namespace model {
-  Relation::Relation(string file, string name, vector<string> columnNames) : _name(name) {
+  
+  // COMPARE CLASS IMPLEMENTATION
+  
+  class CompareClass {
+  public:
+    CompareClass(const vector<int>& indeces);
+    
+    bool operator()(const Tuple* recordA, const Tuple* recordB);
+  private:
+    const vector<int>& _indeces;
+  };
+  
+  
+  CompareClass::CompareClass(const vector<int>& indeces) : _indeces(indeces) {}
+  
+  
+  inline bool CompareClass::operator()(const Tuple* recordA, const Tuple* recordB) {
+    
+    for (unsigned int i = 0; i < _indeces.size(); i++) {
+      if (recordA->getValue(_indeces[i]) < recordB->getValue(_indeces[i]))
+        return true;
+      else if (recordA->getValue(_indeces[i]) > recordB->getValue(_indeces[i])) 
+        return false;
+    }
+      
+    return false;
+  }
+  
+  /////////////////////////////////////////////////////////////////////////////////////////////
+  Relation::Relation(string name, const vector<string>& columnNames) : _name(name) {
+    int counter = 0;
+    
+    for (vector<string>::const_iterator it = columnNames.begin(); it != columnNames.end(); ++it) {
+      _columnNamesToIndeces[*it] = counter++;
+    }
+  }
+  
+  Relation::Relation(string file, string name, const vector<string>& columnNames) : _name(name) {
   
     int counter = 0;
     
-    for (vector<string>::iterator it = columnNames.begin(); it != columnNames.end(); ++it) {
+    for (vector<string>::const_iterator it = columnNames.begin(); it != columnNames.end(); ++it) {
       _columnNamesToIndeces[*it] = counter++;
     }
     
@@ -62,6 +100,11 @@ namespace model {
     }
   }
   
+  void Relation::sortBy(const vector<int>& indeces) {
+    CompareClass* compareObject = new CompareClass(indeces);
+    
+    sort(_records.begin(), _records.end(), *compareObject);
+  }
   
   int Relation::size() const {
     return _records.size();
@@ -71,12 +114,19 @@ namespace model {
     return _name;
   }
   
-  /*
-    PRIVATE MEMBERS
-  */
+  const map<string,int>& Relation::columnNamesToIndeces() const {
+    return _columnNamesToIndeces;
+  }
   
   void Relation::addRecord(Tuple* record) {
     _records.push_back(record);
   }
+  
+  /*
+    PRIVATE MEMBERS
+  */
+  
+  
+  
   
 }

@@ -64,4 +64,14 @@ namespace model {
       throw 2;
     }
   }
+  
+  Relation* Database::getMutableRelation(string name) {
+    map<string, Relation*>::const_iterator it = _relationsByName.find(name);
+    
+    if (it != _relationsByName.end()) {
+      return it->second;
+    } else {
+      throw 2;
+    }
+  }
 }

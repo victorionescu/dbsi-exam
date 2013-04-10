@@ -12,18 +12,25 @@ namespace model {
   
   class Relation {
   public:
-    Relation(string file, string name, vector<string> columnNames);
+    Relation(string name, const vector<string>& columnNames);
+    
+    Relation(string file, string name, const vector<string>& columnNames);
     
     const Tuple& getRecord(int index) const;
     
     int getColumnIndex(string columnName) const;
     
+    void sortBy(const vector<int>& indeces);
+    
     int size() const;
     
     string name() const;
+    
+    void addRecord(Tuple* record);
+    
+    const map<string, int>& columnNamesToIndeces() const;
      
   private:
-    void addRecord(Tuple* record);
     
     string _name;
     

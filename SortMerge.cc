@@ -6,6 +6,7 @@
 #include "algorithm/SortMergeAlgorithm.h"
 #include "model/Database.h"
 #include "model/Query.h"
+#include "model/Relation.h"
 
 using algorithm::JoinAlgorithm;
 using algorithm::SortMergeAlgorithm;
@@ -30,7 +31,9 @@ int main(int argc, char* argv[]) {
   
   Query* query = new Query(args[1], db, joinAlgorithm);
   
-  query->executeQuery();
+  Relation* result = query->executeQuery();
+  
+  //printf("%d records.\n", result->size());
   
   return 0;
 }

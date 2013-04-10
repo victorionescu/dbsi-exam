@@ -15,7 +15,7 @@ using model::Relation;
 namespace algorithm {
   class JoinAlgorithm {
   public:
-    virtual Relation* joinedRelation(vector<const Relation*> relations,
+    virtual Relation* joinedRelation(vector<Relation*> relations,
                                      vector<string> attributes) = 0;
   };
 }

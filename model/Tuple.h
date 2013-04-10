@@ -16,6 +16,7 @@ namespace model {
     
     int getValue(int index) const;
     
+    int size() const;
   private:
     int _size;
     vector<int> _tuple;

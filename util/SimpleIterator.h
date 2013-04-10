@@ -17,7 +17,7 @@ using model::Tuple;
 namespace util {
   class SimpleIterator {
   public:
-    SimpleIterator(const Relation& relation);
+    SimpleIterator(Relation* relation, const vector<int>& indecesToSort);
     
     const Tuple& record();
     
@@ -26,7 +26,7 @@ namespace util {
     bool atEnd();
     
   private:
-    const Relation& _relation;
+    Relation* _relation;
     
     int _currentIndex;
   };

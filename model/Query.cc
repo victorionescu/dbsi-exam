@@ -37,7 +37,7 @@ namespace model {
       
       try {  
         
-        _relations.push_back(database->getRelation(relationName));
+        _relations.push_back(database->getMutableRelation(relationName));
         
         printf("LOG: Joining relation %s.\n", relationName.c_str());
       

@@ -27,7 +27,7 @@ namespace model {
     
     JoinAlgorithm* _joinAlgorithm;
     
-    vector<const Relation*> _relations;
+    vector<Relation*> _relations;
     
     vector<string> _attributes;
   };

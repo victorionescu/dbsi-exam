@@ -19,5 +19,9 @@ namespace model {
   int Tuple::getValue(int index) const {
     return _tuple[index];
   }
+  
+  int Tuple::size() const {
+    return _size;
+  }
 
 }

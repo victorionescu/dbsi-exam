@@ -22,7 +22,7 @@ using util::SimpleIterator;
 namespace algorithm {
   class SortMergeAlgorithm : public JoinAlgorithm {
   public:
-    Relation* joinedRelation(vector<const Relation*> relations,
+    Relation* joinedRelation(vector<Relation*> relations,
                              vector<string> attributes);
                              
   private:
